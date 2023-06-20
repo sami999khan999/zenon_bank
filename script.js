@@ -59,8 +59,9 @@ const labelSumIn = document.querySelector(".summary-value-in");
 const labelSumOut = document.querySelector(".summary-value-out");
 const labelSumInterest = document.querySelector(".summary-value-interest");
 const labelTimer = document.querySelector(".timer");
+const login = document.querySelector(".login");
 // -------------------------------------------------------------------------------------------------- //
-// cotainer
+// container
 const containerApp = document.querySelector(".app");
 const containerMovements = document.querySelector(".movements");
 // -------------------------------------------------------------------------------------------------- //
@@ -282,6 +283,10 @@ btnLogin.addEventListener("click", function (e) {
   // clear fields
   inputLoginUsername.value = inputLoginPassword.value = "";
   inputLoginPassword.blur();
+
+  login.style.opacity = 0;
+  login.style.visibility = "hidden";
+  login.style.display = "none";
 });
 
 // ================================================================================================== //

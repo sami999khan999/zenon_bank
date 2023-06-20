@@ -27,52 +27,80 @@ nav {
 }
 
 .welcome {
-  font-size: 2rem;
-  font-weight: 500;
+  font-size: 3.2rem;
+  font-weight: bold;
+  margin-top: 3rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .logo {
-  height: 10rem;
+  width: 25rem;
+  padding-left: 6rem;
+  margin-top: 3rem;
 }
 
 .login {
   display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-left: 40vw;
+  width: 45rem;
+  height: 47rem;
+  padding-left: 5rem;
+  padding-top: 5rem;
+  margin-top: 10rem;
+  background-color: #222222;
+  border-radius: 1rem;
+}
+
+.login p {
+  font-size: 4rem;
+  color: rgb(12, 180, 180);
+  text-align: center;
+  padding-right: 7rem;
+  padding-bottom: 2rem;
+  font-weight: bold;
 }
 
 .login-input {
-  padding: 0.5rem 2rem;
-  font-size: 1.6rem;
+  padding: 0.1rem 1rem;
+  font-size: 2rem;
   font-family: inherit;
-  text-align: center;
-  width: 15rem;
-  border-radius: 10rem;
-  margin-right: 1rem;
+  width: 35rem;
+  background-color: #333333;
+  margin-right: 2rem;
+  padding: 1.2rem;
+  border-radius: 6px;
   color: inherit;
-  border: 1px solid #fff;
   transition: all 0.3s;
 }
 
 .login-input:focus {
-  border-color: #ccc;
+  color: #bababa;
 }
 
 .login-input::placeholder {
-  color: #bbb;
+  color: #b9b9b9;
 }
 
 .login-btn {
-  background: none;
+  background-color: rgb(12, 180, 180);
+  display: block;
+  margin-top: 2rem;
+  padding: 1.2rem;
+  border-radius: 6px;
+  width: 35rem;
   font-size: 2rem;
-  color: inherit;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: black;
   cursor: pointer;
   transition: all 0.3s;
 }
 
-.login-btn:hover,
-.login-btn:focus,
-.btn-sort:focus,
-.btn-sort:hover {
-  color: #777;
+.login-btn:hover {
+  background-color: rgb(12, 140, 140);
+  color: black;
 }
 
 .app {
@@ -83,8 +111,6 @@ nav {
   grid-template-columns: 4fr 3fr;
   grid-template-rows: auto repeat(3, 15rem) auto;
   gap: 2rem;
-
-  /* Login animation */
   opacity: 0;
   transition: all 0.3s;
 }
