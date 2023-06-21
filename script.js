@@ -60,6 +60,9 @@ const labelSumOut = document.querySelector(".summary-value-out");
 const labelSumInterest = document.querySelector(".summary-value-interest");
 const labelTimer = document.querySelector(".timer");
 const login = document.querySelector(".login");
+const log = document.querySelector(".log");
+const body = document.querySelector(".header__title");
+
 // -------------------------------------------------------------------------------------------------- //
 // container
 const containerApp = document.querySelector(".app");
@@ -287,6 +290,7 @@ btnLogin.addEventListener("click", function (e) {
   login.style.opacity = 0;
   login.style.visibility = "hidden";
   login.style.display = "none";
+  containerApp.style.marginTop = "-65rem";
 });
 
 // ================================================================================================== //
@@ -472,3 +476,13 @@ function logOut() {
 
   return timer;
 }
+
+log.addEventListener("click", function () {
+  login.style.opacity = 2;
+  login.style.visibility = "visible";
+  login.style.transition = ".5s";
+  login.style.marginTop = "-60rem";
+  body.style.opacity = 0;
+  body.style.visibility = "hidden";
+  body.style.transition = ".2s";
+});
