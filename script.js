@@ -99,6 +99,17 @@ function updateUI() {
 let currentAccount;
 
 //=================================================================================================================//
+// formating currency
+//=================================================================================================================//
+
+function formatCurrency(value, local, currency) {
+  return new Intl.NumberFormat(local, {
+    style: "currency",
+    currency: currency,
+  }).format(value);
+}
+
+//=================================================================================================================//
 //  Movements
 //=================================================================================================================//
 
@@ -117,7 +128,11 @@ function displayMovements(account, sort = false) {
       i + 1
     } ${type}</div>
           <div class="movements-date">5 days ago</div>
-          <div class="movements-value">${move}</div>
+          <div class="movements-value">${formatCurrency(
+            move,
+            account.locale,
+            account.currency
+          )}</div>
         </div>`;
 
     containerMovements.insertAdjacentHTML("afterbegin", html);
@@ -133,7 +148,11 @@ function displaySummery(account) {
     .filter((move) => move > 0)
     .reduce((acc, deposit) => acc + deposit);
 
-  labelSumIn.textContent = `${income}$`;
+  labelSumIn.textContent = formatCurrency(
+    income,
+    account.local,
+    account.currency
+  );
 
   //---------------------------------------------------------------------------------------------------------------//
 
@@ -142,20 +161,26 @@ function displaySummery(account) {
     .filter((move) => move < 0)
     .reduce((acc, withdrawl) => acc + withdrawl);
 
-  labelSumOut.textContent = `${Math.abs(outcome)}$`;
-
-  // // Math.abs() method is used to calculate the absolute value of a number. The absolute value of a number represents its distance from zero on the number line, regardless of its sign. //
+  labelSumOut.textContent = formatCurrency(
+    Math.abs(outcome),
+    account.local,
+    account.currency
+  );
 
   //---------------------------------------------------------------------------------------------------------------//
 
-  //interest
+  // interest
   const interest = account.movements
     .filter((move) => move > 0)
     .map((deposit) => (deposit * account.interestRate) / 100)
     .filter((interest) => interest > 1)
     .reduce((acc, interest) => acc + interest);
 
-  labelSumInterest.textContent = `${interest}$`;
+  labelSumInterest.textContent = formatCurrency(
+    interest,
+    account.local,
+    account.currency
+  );
 }
 
 //=================================================================================================================//
@@ -164,7 +189,11 @@ function displaySummery(account) {
 
 function displayBalance(account) {
   account.balance = account.movements.reduce((acc, move) => acc + move, 0);
-  labelBalance.textContent = `${account.balance}$`;
+  labelBalance.textContent = formatCurrency(
+    account.balance,
+    account.local,
+    account.currency
+  );
 }
 
 //=================================================================================================================//
@@ -174,6 +203,7 @@ function displayBalance(account) {
 function createUsername(accounts) {
   accounts.forEach((account) => {
     account.username = account.owner
+
       .toLowerCase()
       .split(" ")
       .map((word) => word.at(0))
@@ -195,24 +225,36 @@ btnLogin.addEventListener("click", function (event) {
     (account) => account.username === inputLoginUsername.value
   );
 
-  if (currentAccount.password === Number(inputLoginPassword.value)) {
-    // wellcome massage
-    labelWelcome.textContent = `Wellcome Back, ${currentAccount.owner
-      .split(" ")
-      .at(0)}`;
-
-    // uiUpdate
-    containerApp.style.opacity = 1;
-    updateUI();
-
-    // clear fields
-    inputLoginUsername.value = inputLoginPassword.value = "";
-    inputLoginPassword.blur();
+  // (if) the username is wrong, (else if) the username and password is right and (else) the password is wrong.
+  if (!currentAccount) {
+    setTimeout(() => {
+      labelWelcome.textContent = "Account Does Not Exists";
+      labelWelcome.style.color = "red";
+      // uiUpdate
+      containerApp.style.opacity = 0;
+    }, 3000);
+  } else if (currentAccount.password === Number(inputLoginPassword.value)) {
+    setTimeout(() => {
+      // wellcome massage
+      labelWelcome.textContent = `Wellcome Back, ${currentAccount.owner
+        .split(" ")
+        .at(0)}`;
+      labelWelcome.style.color = "green";
+      // uiUpdate
+      containerApp.style.opacity = 1;
+      updateUI();
+    }, 3000);
   } else {
-    labelWelcome.textContent = "Login failed";
-    labelWelcome.style.color = "red";
-    containerApp.style.opacity = 0;
+    setTimeout(() => {
+      // wellcome massage
+      labelWelcome.textContent = "Login failed";
+      labelWelcome.style.color = "red";
+      containerApp.style.opacity = 0;
+    }, 3000);
   }
+  // clear fields
+  inputLoginUsername.value = inputLoginPassword.value = "";
+  inputLoginPassword.blur();
 });
 
 //=================================================================================================================//
@@ -228,24 +270,36 @@ btnTransfer.addEventListener("click", function (event) {
 
   const amount = Number(inputTransferAmount.value);
 
-  if (
+  // (if) the username is wroug, (else if) the username and amount is right, (else) the amount is wroung
+  if (!receinverAccount) {
+    setTimeout(() => {
+      // massage
+      labelWelcome.textContent = "Account Does Not Exists";
+      labelWelcome.style.color = "red";
+    }, 3000);
+  } else if (
     amount > 0 &&
     amount <= currentAccount.balance &&
     currentAccount.username !== receinverAccount.username
   ) {
-    // transper money
-    currentAccount.movements.push(-amount);
-    receinverAccount.movements.push(amount);
+    setTimeout(() => {
+      // transper money
+      currentAccount.movements.push(-amount);
+      receinverAccount.movements.push(amount);
 
-    // uiUpdate
-    updateUI();
+      // uiUpdate
+      updateUI();
 
-    // massage
-    labelWelcome.textContent = "Transfer Successful";
-    labelWelcome.style.color = "green";
+      // massage
+      labelWelcome.textContent = "Transfer Successful";
+      labelWelcome.style.color = "green";
+    }, 3000);
   } else {
-    labelWelcome.textContent = "Transfer Failed";
-    labelWelcome.style.color = "red";
+    setTimeout(() => {
+      // massage
+      labelWelcome.textContent = "Transfer Failed";
+      labelWelcome.style.color = "red";
+    }, 3000);
   }
 
   // clear field
@@ -266,18 +320,22 @@ btnLoan.addEventListener("click", function (event) {
     amount > 0 &&
     currentAccount.movements.some((move) => move > amount * 0.1)
   ) {
-    // adding lone amount
-    currentAccount.movements.push(amount);
+    setTimeout(() => {
+      // adding lone amount
+      currentAccount.movements.push(amount);
 
-    // UI Update
-    updateUI();
+      // UI Update
+      updateUI();
 
-    // massage
-    labelWelcome.textContent = "Lone Successful";
-    labelWelcome.style.color = "green";
+      // massage
+      labelWelcome.textContent = "Lone Successful";
+      labelWelcome.style.color = "green";
+    }, 3000);
   } else {
-    labelWelcome.textContent = "Lone Not Successful";
-    labelWelcome.style.color = "red";
+    setTimeout(() => {
+      labelWelcome.textContent = "Lone Not Successful";
+      labelWelcome.style.color = "red";
+    }, 3000);
   }
 
   // clear firld
@@ -296,21 +354,25 @@ btnClose.addEventListener("click", function (event) {
     currentAccount.username === inputCloseUsername.value &&
     currentAccount.password === Number(inputClosePassword.value)
   ) {
-    const deleatIndex = accounts.findIndex(
-      (account) => account.username === currentAccount.username
-    );
-    // deleat
-    accounts.splice(deleatIndex, 1);
+    setTimeout(() => {
+      const deleatIndex = accounts.findIndex(
+        (account) => account.username === currentAccount.username
+      );
+      // deleat
+      accounts.splice(deleatIndex, 1);
 
-    // Update UI
-    containerApp.style.opacity = 0;
+      // Update UI
+      containerApp.style.opacity = 0;
 
-    // massage
-    labelWelcome.textContent = "Accout Successfuly Deleated";
-    labelWelcome.style.color = "green";
+      // massage
+      labelWelcome.textContent = "Accout Successfuly Deleated";
+      labelWelcome.style.color = "green";
+    }, 3000);
   } else {
-    labelWelcome.textContent = "Accout Can Not Be Deleated";
-    labelWelcome.style.color = "red";
+    setTimeout(() => {
+      labelWelcome.textContent = "Accout Can Not Be Deleated";
+      labelWelcome.style.color = "red";
+    }, 3000);
   }
   // clear filds
   inputClosePassword.value = inputCloseUsername.value = "";
@@ -318,7 +380,7 @@ btnClose.addEventListener("click", function (event) {
 });
 
 //=================================================================================================================//
-// lone
+// sort
 //=================================================================================================================//
 
 let sortedMove = false;
