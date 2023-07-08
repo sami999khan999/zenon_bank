@@ -390,4 +390,4 @@ btnSort.addEventListener("click", function (event) {
 
   displayMovements(currentAccount, !sortedMove);
   sortedMove = !sortedMove;
-})
+});
