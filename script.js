@@ -230,6 +230,7 @@ btnLogin.addEventListener("click", function (event) {
     setTimeout(() => {
       labelWelcome.textContent = "Account Does Not Exists";
       labelWelcome.style.color = "red";
+
       // uiUpdate
       containerApp.style.opacity = 0;
     }, 3000);
@@ -240,6 +241,18 @@ btnLogin.addEventListener("click", function (event) {
         .split(" ")
         .at(0)}`;
       labelWelcome.style.color = "green";
+
+      // display date and time
+      const now = new Date();
+
+      labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      }).format(now);
+
       // uiUpdate
       containerApp.style.opacity = 1;
       updateUI();
@@ -380,7 +393,7 @@ btnClose.addEventListener("click", function (event) {
 });
 
 //=================================================================================================================//
-// sor
+// sort
 //=================================================================================================================//
 
 let sortedMove = false;
