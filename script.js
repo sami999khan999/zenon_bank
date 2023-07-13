@@ -20,7 +20,7 @@ const accounts = [
       "2022-09-21T23:36:17.929Z",
       "2022-09-25T12:51:31.398Z",
       "2022-09-28T06:41:26.190Z",
-      "2022-09-29T08:11:36.678Z",
+      "2023-07-13T08:11:36.678Z",
     ],
     currency: "USD",
     locale: "en-US",
@@ -40,7 +40,7 @@ const accounts = [
       "2022-08-22T23:36:17.522Z",
       "2022-09-25T12:51:31.491Z",
       "2022-09-28T06:41:26.394Z",
-      "2022-09-29T08:11:36.276Z",
+      "2023-07-29T08:11:36.276Z",
     ],
     currency: "EUR",
     locale: "en-GB",
@@ -110,7 +110,24 @@ function formatCurrency(value, local, currency) {
 }
 
 //=================================================================================================================//
-//  Movements
+// firmating movements date
+//=================================================================================================================//
+
+function formateMoveDate(date, local) {
+  const calculateDays = (day2, day1) =>
+    Math.round(Math.abs(day1 - day2) / (24 * 60 * 60 * 100));
+
+  const daysPased = calculateDays(new Date(), date);
+
+  if (daysPased === 0) return "Today";
+  if (daysPased === 1) return "Yesterday";
+  if (daysPased <= 7) return `${daysPased} days ago`;
+
+  return new Intl.DateTimeFormat(local).format(date);
+}
+
+//=================================================================================================================//
+// Movements
 //=================================================================================================================//
 
 function displayMovements(account, sort = false) {
@@ -122,12 +139,17 @@ function displayMovements(account, sort = false) {
 
   moves.forEach((move, i, arr) => {
     const type = move > 0 ? "deposit" : "withdrawal";
+
+    // formate movement date
+    const date = new Date(account.movementsDates[i]);
+    const formateDate = formateMoveDate(date, account.local);
+
     const html = `
         <div class="movements-row">
           <div class="movements-type movements-type-${type}">${
       i + 1
     } ${type}</div>
-          <div class="movements-date">5 days ago</div>
+          <div class="movements-date">${formateDate}</div>
           <div class="movements-value">${formatCurrency(
             move,
             account.locale,
@@ -300,6 +322,10 @@ btnTransfer.addEventListener("click", function (event) {
       currentAccount.movements.push(-amount);
       receinverAccount.movements.push(amount);
 
+      // date and time
+      currentAccount.movementsDates.push(new Date().toISOString());
+      receinverAccount.movementsDates.push(new Date().toISOString());
+
       // uiUpdate
       updateUI();
 
@@ -336,6 +362,9 @@ btnLoan.addEventListener("click", function (event) {
     setTimeout(() => {
       // adding lone amount
       currentAccount.movements.push(amount);
+
+      // date and time
+      currentAccount.movementsDates.push(new Date().toISOString());
 
       // UI Update
       updateUI();
@@ -393,7 +422,7 @@ btnClose.addEventListener("click", function (event) {
 });
 
 //=================================================================================================================//
-// sor
+// sort
 //=================================================================================================================//
 
 let sortedMove = false;
@@ -404,3 +433,16 @@ btnSort.addEventListener("click", function (event) {
   displayMovements(currentAccount, !sortedMove);
   sortedMove = !sortedMove;
 });
+
+//=================================================================================================================//
+// timer logOut
+//=================================================================================================================//
+
+function logOut() {}
+labelTimer.textContent = "";
+
+let time = 120;
+const clock = () => {
+  const min = String(Math.trunc(time / 60)).padStart(2, 0);
+  console.log(min);
+};
