@@ -96,7 +96,7 @@ function updateUI() {
   displayBalance(currentAccount);
 }
 
-let currentAccount;
+let currentAccount, timer;
 
 //=================================================================================================================//
 // formating currency
@@ -114,8 +114,8 @@ function formatCurrency(value, local, currency) {
 //=================================================================================================================//
 
 function formateMoveDate(date, local) {
-  const calculateDays = (day2, day1) =>
-    Math.round(Math.abs(day1 - day2) / (24 * 60 * 60 * 100));
+  const calculateDays = (day1, day2) =>
+    Math.round(Math.abs(day2 - day1) / (24 * 60 * 60 * 100));
 
   const daysPased = calculateDays(new Date(), date);
 
@@ -176,8 +176,6 @@ function displaySummery(account) {
     account.currency
   );
 
-  //---------------------------------------------------------------------------------------------------------------//
-
   // outcome
   const outcome = account.movements
     .filter((move) => move < 0)
@@ -188,8 +186,6 @@ function displaySummery(account) {
     account.local,
     account.currency
   );
-
-  //---------------------------------------------------------------------------------------------------------------//
 
   // interest
   const interest = account.movements
@@ -275,7 +271,11 @@ btnLogin.addEventListener("click", function (event) {
         minute: "numeric",
       }).format(now);
 
-      // uiUpdate
+      // logOut timer
+      clearInterval(timer);
+      logOut();
+
+      // Update UI
       containerApp.style.opacity = 1;
       updateUI();
     }, 3000);
@@ -333,12 +333,20 @@ btnTransfer.addEventListener("click", function (event) {
       labelWelcome.textContent = "Transfer Successful";
       labelWelcome.style.color = "green";
     }, 3000);
+
+    // logOut timer
+    clearInterval(timer);
+    logOut();
   } else {
     setTimeout(() => {
       // massage
       labelWelcome.textContent = "Transfer Failed";
       labelWelcome.style.color = "red";
     }, 3000);
+
+    // logOut timer
+    clearInterval(timer);
+    logOut();
   }
 
   // clear field
@@ -373,11 +381,19 @@ btnLoan.addEventListener("click", function (event) {
       labelWelcome.textContent = "Lone Successful";
       labelWelcome.style.color = "green";
     }, 3000);
+
+    // logOut timer
+    clearInterval(timer);
+    logOut();
   } else {
     setTimeout(() => {
       labelWelcome.textContent = "Lone Not Successful";
       labelWelcome.style.color = "red";
     }, 3000);
+
+    // logOut timer
+    clearInterval(timer);
+    logOut();
   }
 
   // clear firld
@@ -415,6 +431,9 @@ btnClose.addEventListener("click", function (event) {
       labelWelcome.textContent = "Accout Can Not Be Deleated";
       labelWelcome.style.color = "red";
     }, 3000);
+    // logOut timer
+    clearInterval(timer);
+    logOut();
   }
   // clear filds
   inputClosePassword.value = inputCloseUsername.value = "";
@@ -438,11 +457,25 @@ btnSort.addEventListener("click", function (event) {
 // timer logOut
 //=================================================================================================================//
 
-function logOut() {}
-labelTimer.textContent = "";
+function logOut() {
+  labelTimer.textContent = "";
 
-let time = 120;
-const clock = () => {
-  const min = String(Math.trunc(time / 60)).padStart(2, 0);
-  console.log(min);
-};
+  let time = 120;
+  const clock = () => {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = "You've been logged out!";
+      containerApp.style.opacity = 0;
+    }
+    time--;
+  };
+
+  clock();
+
+  timer = setInterval(clock, 1000);
+}
